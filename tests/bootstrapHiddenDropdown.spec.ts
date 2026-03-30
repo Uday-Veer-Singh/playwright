@@ -9,7 +9,7 @@ test("bootstrap hidden dropdown", async ({ page }) => {
   // Login
   await page.locator("input[placeholder='Username']").fill("Admin");
   await page.locator("input[placeholder='Password']").fill("admin123");
-  await page.locator("button[type='submit']").click();
+  await page.locator("button[type='submi t']").click();
 
   await page.getByText("PIM").click();
 
