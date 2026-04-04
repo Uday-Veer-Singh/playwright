@@ -29,7 +29,7 @@ test("frames demo", async ({ page }) => {
   await page.waitForTimeout(5000);
 });
 
-test.only("Inner/child frames demo", async ({ page }) => {
+test("Inner/child frames demo", async ({ page }) => {
   await page.goto("https://ui.vision/demo/webtest/frames/");
 
   const frame3 = page.frame({
