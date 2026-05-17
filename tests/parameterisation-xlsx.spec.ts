@@ -1,35 +1,35 @@
-/*
 import { test, expect } from "@playwright/test";
 import fs from "fs";
-import { parse } from "csv-parse/sync";
+import * as XLSX from "xlsx";
 
-//  Reading data from csv file
+// Load exel file
+// file --> workbook --> worksheet --> data
+const exelPath = "test-data/data.xlsx";
 
-const csvPath = "test-data/data.csv";
+const workbook = XLSX.readFile(exelPath);
 
-const fileContent = fs.readFileSync(csvPath, "utf-8");
+const sheetName = workbook.SheetNames[0];
 
-const records: any = parse(fileContent, {
-  columns: true,
-  skip_empty_lines: true,
-});
+const worksheet = workbook.Sheets[sheetName];
+
+//  Reading data from exel file
+
+const loginData: any = XLSX.utils.sheet_to_json(worksheet);
 
 // Test
 test.describe("Login data driven test", async () => {
-  for (const content of records) {
+  for (const { email, password, validity } of loginData) {
     // console.log(email, password, validity);
 
-    test(`login for ${content.email} and ${content.password}`, async ({
-      page,
-    }) => {
+    test(`login for ${email} and ${password}`, async ({ page }) => {
       await page.goto("https://demowebshop.tricentis.com/login");
 
       // Fill login form
-      await page.locator("#Email").fill(content.email);
-      await page.locator("#Password").fill(content.password);
+      await page.locator("#Email").fill(email);
+      await page.locator("#Password").fill(password);
       await page.locator("input[value='Log in']").click();
 
-      if (content.validity.toLowerCase() === "valid") {
+      if (validity.toLowerCase() === "valid") {
         // Check logout link is visible - means login is successful
         const logoutLink = page.locator('a[href="/logout"]');
         await expect(logoutLink).toBeVisible({ timeout: 5000 });
@@ -44,4 +44,3 @@ test.describe("Login data driven test", async () => {
     });
   }
 });
-*/
